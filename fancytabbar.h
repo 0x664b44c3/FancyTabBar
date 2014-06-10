@@ -45,7 +45,7 @@ class FancyTabBar : public QWidget
     Q_OBJECT
 
 public:
-    enum struct TabBarPosition { Above, Below, Left, Right };
+    enum TabBarPosition { Above, Below, Left, Right };
 
     FancyTabBar(const TabBarPosition position, QWidget *parent = 0);
     ~FancyTabBar();
@@ -87,6 +87,7 @@ public:
 
     QIcon tabIcon(int index) const { return mAttachedTabs.at(index)->icon; }
     QString tabText(int index) const { return mAttachedTabs.at(index)->text; }
+    void setTabText(int index, QString text) const { mAttachedTabs.at(index)->text=text; }
     int count() const {return mAttachedTabs.count(); }
     QRect tabRect(int index) const;
 
@@ -97,7 +98,7 @@ public slots:
     void emitCurrentIndex();
 
 private:
-    enum struct Corner { OutsideBeginning, OutsideEnd, InsideBeginning, InsideEnd };
+    enum Corner { OutsideBeginning, OutsideEnd, InsideBeginning, InsideEnd };
     QPoint getCorner(const QRect& rect, const Corner corner) const;
 
     // You can pass this method a QRect and tell it to move its edges to the outside (+)
