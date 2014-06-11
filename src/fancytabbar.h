@@ -45,11 +45,16 @@ class FancyTabBar : public QWidget
     Q_OBJECT
 
 public:
-    enum TabBarPosition { Above, Below, Left, Right };
+    enum TabBarPosition
+    {
+        Above,
+        Below,
+        Left,
+        Right
+    };
 
     FancyTabBar(const TabBarPosition position, QWidget *parent = 0);
     ~FancyTabBar();
-
 
     bool event(QEvent *event);
 

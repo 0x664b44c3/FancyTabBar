@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>mode_Project.png</file>
+        <file>mode_Debug.png</file>
+        <file>mode_Design.png</file>
+        <file>mode_Edit.png</file>
+    </qresource>
+</RCC>
