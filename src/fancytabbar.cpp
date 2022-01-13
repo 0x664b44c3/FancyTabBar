@@ -31,7 +31,8 @@
 #include <stylehelper.h>
 
 #include <QMouseEvent>
-#include <QWindowsStyle>
+#include <QStyle>
+//#include <QWindowsStyle>
 #include <QPainter>
 #include <QColor>
 #include <QStackedLayout>
@@ -45,6 +46,7 @@ FancyTabBar::FancyTabBar(const TabBarPosition position, QWidget *parent)
 {
     mHoverIndex = -1;
     mCurrentIndex = -1;
+	mSpacing = 8;
 
     if (mPosition == FancyTabBar::Above || mPosition == FancyTabBar::Below)
     {
@@ -59,7 +61,7 @@ FancyTabBar::FancyTabBar(const TabBarPosition position, QWidget *parent)
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     }
 
-    setStyle(new QWindowsStyle);
+//	setStyle(new QStyle);// new QWindowsStyle);
     setAttribute(Qt::WA_Hover, true);
     setFocusPolicy(Qt::NoFocus);
     setMouseTracking(true); // Needed for hover events
@@ -71,7 +73,7 @@ FancyTabBar::FancyTabBar(const TabBarPosition position, QWidget *parent)
 
 FancyTabBar::~FancyTabBar()
 {
-    delete style();
+//    delete style();
 }
 
 QSize FancyTabBar::tabSizeHint(bool minimum) const
@@ -80,17 +82,36 @@ QSize FancyTabBar::tabSizeHint(bool minimum) const
     boldFont.setPointSizeF(StyleHelper::sidebarFontSize());
     boldFont.setBold(true);
     QFontMetrics fm(boldFont);
-    int spacing = 8;
-    int width = 60 + spacing + 2;
+	int width = 60 + mSpacing + 2;
     int maxLabelwidth = 0;
     for (int tab=0 ; tab<count() ;++tab) {
-        int width = fm.width(tabText(tab));
+		int width = fm.horizontalAdvance(tabText(tab));
         if (width > maxLabelwidth)
             maxLabelwidth = width;
     }
-    int iconHeight = minimum ? 0 : 32;
+	int iconHeight = minimum ? 0 : mIconSize;
 
-    return QSize(qMax(width, maxLabelwidth + 4), iconHeight + spacing + fm.height());
+	return QSize(qMax(width, maxLabelwidth + 4), iconHeight + mSpacing + fm.height());
+}
+
+int FancyTabBar::spacing() const
+{
+	return mSpacing;
+}
+
+void FancyTabBar::setSpacing(int newSpacing)
+{
+	mSpacing = newSpacing;
+}
+
+int FancyTabBar::iconSize() const
+{
+	return mIconSize;
+}
+
+void FancyTabBar::setIconSize(int newIconSize)
+{
+	mIconSize = newIconSize;
 }
 
 QPoint FancyTabBar::getCorner(const QRect& rect, const Corner corner) const
@@ -189,7 +210,8 @@ void FancyTabBar::paintEvent(QPaintEvent *event)
     lg.setFinalStop(getCorner(rectangle, InsideBeginning));
     lg.setColorAt(0.0, QColor(64, 64, 64, 255));
     lg.setColorAt(1.0, QColor(130, 130, 130, 255));
-    painter.fillRect(rectangle, lg);
+	painter.fillRect(rectangle, lg);
+//	painter.fillRect(rectangle, this->style()->standardPalette().window());
 
     // draw dark widget bordert on inner inside (e.g. bottom if the widget position is top)
     painter.setPen(StyleHelper::borderColor());
@@ -357,7 +379,7 @@ void FancyTabBar::paintTab(QPainter *painter, int tabIndex) const
         QLinearGradient grad(getCorner(rect, OutsideBeginning), getCorner(rect, InsideBeginning));
         grad.setColorAt(0, QColor(255, 255, 255, 140));
         grad.setColorAt(1, QColor(255, 255, 255, 210));
-        painter->fillRect(adjustRect(rect, 0, 0, 0, -1), grad);
+		painter->fillRect(adjustRect(rect, 0, 0, 0, -1), grad);
         painter->restore();
 
         // shadows (the black lines immediately before/after (active && selected)-backgrounds)

@@ -80,6 +80,14 @@ public:
         mAttachedTabs.insert(index, tab);
     }
 
+	int appendTab(const QIcon &icon, const QString &label) {
+		FancyTab *tab = new FancyTab(this);
+		tab->icon = icon;
+		tab->text = label;
+		mAttachedTabs.append(tab);
+		return mAttachedTabs.size()-1;
+	}
+
     void removeTab(int index) {
         FancyTab *tab = mAttachedTabs.takeAt(index);
         delete tab;
@@ -95,6 +103,12 @@ public:
     void setTabText(int index, QString text) const { mAttachedTabs.at(index)->text=text; }
     int count() const {return mAttachedTabs.count(); }
     QRect tabRect(int index) const;
+
+	int iconSize() const;
+	void setIconSize(int newIconSize);
+
+	int spacing() const;
+	void setSpacing(int newSpacing);
 
 signals:
     void currentChanged(int);
@@ -128,7 +142,8 @@ private:
     QList<FancyTab*> mAttachedTabs;
     QTimer mTimerTriggerChangedSignal;
     QSize tabSizeHint(bool minimum = false) const;
-
+	int mIconSize;
+	int mSpacing;
 };
 
 #endif // FANCYTABWIDGET_H
